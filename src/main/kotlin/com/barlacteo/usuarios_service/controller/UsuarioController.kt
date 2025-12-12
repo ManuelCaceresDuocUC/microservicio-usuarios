@@ -70,17 +70,17 @@ class UsuarioController(
         if (usuarioOpt.isEmpty) return ResponseEntity.notFound().build()
         
         try {
-            // Sube la imagen y obtiene el nombre del archivo (uuid.webp)
-            val filename = storageService.store(file)
+            // 1. El servicio ahora devuelve la URL COMPLETA (con https y región)
+            // Ya no es solo el 'filename', es la 'urlCompleta'
+            val urlCompleta = storageService.store(file)
             
-            // 2. CORRECCIÓN: Construimos la URL usando la variable bucketName
-            val s3Url = "https://$bucketName.s3.amazonaws.com/$filename" 
-
+            // 2. CORRECCIÓN: Usamos el valor directo, SIN agregarle nada extra
             val usuario = usuarioOpt.get()
-            usuario.fotoUrl = s3Url
+            usuario.fotoUrl = urlCompleta // <--- ASÍ DE SIMPLE
+            
             usuarioRepository.save(usuario)
             
-            return ResponseEntity.ok(mapOf("url" to s3Url))
+            return ResponseEntity.ok(mapOf("url" to urlCompleta))
         } catch (e: Exception) {
             e.printStackTrace()
             return ResponseEntity.internalServerError().body(mapOf("error" to "Error al subir imagen"))
