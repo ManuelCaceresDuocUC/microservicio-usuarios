@@ -30,8 +30,9 @@ class TransbankService {
             "buy_order" to ordenCompra,
             "session_id" to UUID.randomUUID().toString(),
             "amount" to monto,
-            // Url de retorno (aunque en app móvil usaremos la respuesta directa)
-            "return_url" to "http://10.0.2.2:8081/api/pedidos/confirmar"      )
+            // CORRECCIÓN IMPORTANTE: La API de Transbank usa "return_url" (con guion bajo)
+            "return_url" to "https://microservicio-usuarios-production-4fdd.up.railway.app/api/pedidos/confirmar"
+        )
 
         val request = HttpEntity(body, headers)
 
@@ -67,5 +68,4 @@ class TransbankService {
             null
         }
     }
-
 }
